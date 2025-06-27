@@ -1,12 +1,4 @@
 # IT Info Website
-
-## 🛠 Technologies
-
-- **Frontend**: React, React Router, Axios  
-- **Backend**: Express.js, Sequelize, MySQL2  
-- **Database**: MySQL 8  
-- **Database GUI**: phpMyAdmin
-
 ---
 
 ## How to Run the Project 
