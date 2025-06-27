@@ -10,19 +10,6 @@
 
 ---
 
-## 📁 Project Structure
-
-```
-info-website/
-├── backend/           # Express + Sequelize API
-├── frontend/          # React App
-├── db/
-│   └── init.sql       # SQL file for DB initialization
-├── .env               # Environment variables (you create this manually)
-├── docker-compose.yml
-├── README.md
-```
-
 ---
 
 ## How to Run the Project 
