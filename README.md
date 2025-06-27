@@ -5,10 +5,7 @@
 - **Frontend**: React, React Router, Axios  
 - **Backend**: Express.js, Sequelize, MySQL2  
 - **Database**: MySQL 8  
-- **Containerization**: Docker + Docker Compose  
 - **Database GUI**: phpMyAdmin
-
----
 
 ---
 
