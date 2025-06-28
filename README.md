@@ -21,6 +21,8 @@ DB_HOST=mysql
 DB_USER=admin
 DB_PASSWORD=admin123
 DB_NAME=infodb
+JWT_SECRET=JWT_SECRET
+JWT_EXPIRES_IN=1d
 ```
 
 ---
