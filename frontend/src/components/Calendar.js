@@ -1,6 +1,5 @@
 import { useCalendarApp, ScheduleXCalendar } from '@schedule-x/react'
 import { useState, useEffect } from 'react'
-// import '@schedule-x/theme-default/dist/calendar.css'
 import {
   createViewDay,
   createViewMonthAgenda,
@@ -8,7 +7,7 @@ import {
   createViewWeek,
 } from '@schedule-x/calendar'
 import { createEventsServicePlugin } from '@schedule-x/events-service'
- import { createEventModalPlugin } from '@schedule-x/event-modal'
+import { createEventModalPlugin } from '@schedule-x/event-modal'
 import '@schedule-x/theme-default/dist/index.css'
  
 function Calendar() {
@@ -32,7 +31,6 @@ function Calendar() {
   })
  
   useEffect(() => {
-    // get all events
     eventsService.getAll()
   }, [])
  
