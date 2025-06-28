@@ -4,7 +4,6 @@ const {
   getAllUsers,
   getUserById,
   getCurrentUser,
-  createUser,
   updateUser,
   updateCurrentUser,
   changePassword,
@@ -17,8 +16,6 @@ router.get('/', getAllUsers);
 router.get('/profile', getCurrentUser);
 
 router.get('/:id', getUserById);
-
-router.post('/', createUser);
 
 router.put('/:id', updateUser);
 

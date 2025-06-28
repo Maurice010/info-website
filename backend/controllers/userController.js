@@ -50,43 +50,10 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
-const createUser = async (req, res) => {
-  try {
-    const { login, password, role } = req.body;
-
-    if (!login || !password) {
-      return res.status(400).json({ 
-        message: 'Login i hasło są wymagane' 
-      });
-    }
-
-    const existingUser = await User.findOne({ 
-      where: { login } 
-    });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Użytkownik z tym loginem już istnieje' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      login,
-      password: hashedPassword,
-      role: role || 'user'
-    });
-
-    const { password: _, ...userWithoutPassword } = user.toJSON();
-    res.status(201).json(userWithoutPassword);
-  } catch (error) {
-    console.error('Error creating user:', error);
-    res.status(500).json({ message: 'Błąd podczas tworzenia użytkownika' });
-  }
-};
-
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { login, email, role } = req.body;
+    const { login } = req.body;
 
     const user = await User.findByPk(id);
     if (!user) {
@@ -99,12 +66,6 @@ const updateUser = async (req, res) => {
         return res.status(400).json({ message: 'Użytkownik z tym loginem już istnieje' });
       }
     }
-
-    await user.update({
-      login: login || user.login,
-      email: email !== undefined ? email : user.email,
-      role: role || user.role,
-    });
 
     const { password: _, ...userWithoutPassword } = user.toJSON();
     res.json(userWithoutPassword);
@@ -183,7 +144,6 @@ module.exports = {
   getAllUsers,
   getUserById,
   getCurrentUser,
-  createUser,
   updateUser,
   updateCurrentUser,
   changePassword,
