@@ -1,5 +1,6 @@
 const { Sequelize } = require('sequelize');
 const UserModel = require('./user');
+const EventModel = require('./event');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
@@ -14,6 +15,7 @@ const sequelize = new Sequelize(
 );
 
 const User = UserModel(sequelize);
+const Event = EventModel(sequelize);
 
 sequelize.sync()
   .then(() => console.log('Połączono z bazą danych i zsynchronizowano modele'))
@@ -22,4 +24,5 @@ sequelize.sync()
 module.exports = {
   sequelize,
   User,
+  Event,
 };
