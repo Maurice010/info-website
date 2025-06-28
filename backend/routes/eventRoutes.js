@@ -5,13 +5,10 @@ const {
   getEventById,
   createEvent,
   updateEvent,
-  deleteEvent,
-  getEventsByCategory
+  deleteEvent
 } = require('../controllers/eventController');
 
 router.get('/', getAllEvents);
-
-router.get('/category/:category', getEventsByCategory);
 
 router.get('/:id', getEventById);
 

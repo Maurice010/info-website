@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Box,
   Container,
@@ -12,38 +12,12 @@ import {
   Divider
 } from '@mui/material'
 import EventItem from '../components/EventItem'
+import axios from 'axios'
 
 function EventList() {
-  const [events] = useState([
-    {
-      name: 'Conference A',
-      startDate: '2025-07-01T10:00',
-      endDate: '2025-07-01T14:00',
-      category: 'Tech',
-      location: 'New York',
-      description: 'A big tech conference.',
-      link: 'https://confA.com'
-    },
-    {
-      name: 'Music Fest',
-      startDate: '2025-08-12T18:00',
-      endDate: '2025-08-13T01:00',
-      category: 'Music',
-      location: 'Los Angeles',
-      description: 'Outdoor music festival.',
-      link: ''
-    },
-    {
-      name: 'Art Expo',
-      startDate: '2025-09-10T09:00',
-      endDate: '2025-09-10T17:00',
-      category: 'Art',
-      location: 'Chicago',
-      description: 'Gallery and artist talks.',
-      link: 'https://artexpo.com'
-    }
-  ])
-  
+  const [events, setEvents] = useState([])
+  const [categories, setCategories] = useState([])
+  const [locationSuggestions, setLocationSuggestions] = useState([])
 
   const [filters, setFilters] = useState({
     name: '',
@@ -53,41 +27,54 @@ function EventList() {
     endDate: ''
   })
 
-  const [categories, setCategories] = useState([])
-  const [locationSuggestions, setLocationSuggestions] = useState([])
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await axios.get('/api/events')
+        setEvents(res.data)
+        const uniqueCategories = [...new Set(res.data.map(e => e.category))]
+        setCategories(uniqueCategories)
+      } catch (err) {
+        console.error('Błąd przy pobieraniu wydarzeń:', err)
+      }
+    }
+
+    fetchEvents()
+  }, [])
 
   useEffect(() => {
-    setCategories([...new Set(events.map(e => e.category))])
-  }, [events])
-
-  useEffect(() => {
-    if (filters.location === '') {
+    if (!filters.location) {
       setLocationSuggestions([])
       return
     }
 
     const input = filters.location.toLowerCase()
-    const suggestions = [...new Set(events
-      .map(e => e.location)
-      .filter(loc => loc.toLowerCase().includes(input))
+    const suggestions = [...new Set(
+      events
+        .map(e => e.location)
+        .filter(loc => loc.toLowerCase().includes(input))
     )]
+
     setLocationSuggestions(suggestions)
   }, [filters.location, events])
 
-  const filteredEvents = events.filter(event => {
-    const matchName = event.name.toLowerCase().includes(filters.name.toLowerCase())
-    const matchCategory = filters.category === 'all' || event.category === filters.category
-    const matchLocation = filters.location === '' || event.location.toLowerCase() === filters.location.toLowerCase()
-    const matchDate =
-      (!filters.startDate || event.endDate >= filters.startDate) &&
-      (!filters.endDate || event.startDate <= filters.endDate)
+  const filteredEvents = useMemo(() => {
+    return events.filter(event => {
+      const matchName = event.name.toLowerCase().includes(filters.name.toLowerCase())
+      const matchCategory = filters.category === 'all' || event.category === filters.category
+      const matchLocation =
+        !filters.location || event.location.toLowerCase() === filters.location.toLowerCase()
+      const matchDate =
+        (!filters.startDate || event.endDate >= filters.startDate) &&
+        (!filters.endDate || event.startDate <= filters.endDate)
 
-    return matchName && matchCategory && matchLocation && matchDate
-  })
+      return matchName && matchCategory && matchLocation && matchDate
+    })
+  }, [events, filters])
 
   const handleLocationSelect = (loc) => {
-    setFilters({ ...filters, location: loc })
-    setLocationSuggestions([])
+    setFilters(prev => ({ ...prev, location: loc }))
+    setLocationSuggestions([]) 
   }
 
   return (
@@ -97,17 +84,19 @@ function EventList() {
           Lista wydarzeń
         </Typography>
 
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 3 }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
           <TextField
             label="Nazwa"
             value={filters.name}
-            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            onChange={(e) => setFilters(prev => ({ ...prev, name: e.target.value }))}
+            sx={{ minWidth: 150 }}
           />
 
           <Select
             value={filters.category}
-            onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+            onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
             displayEmpty
+            sx={{ minWidth: 180 }}
           >
             <MenuItem value="all">Wszystkie kategorie</MenuItem>
             {categories.map((cat, i) => (
@@ -115,11 +104,11 @@ function EventList() {
             ))}
           </Select>
 
-          <Box sx={{ position: 'relative', flexGrow: 1 }}>
+          <Box sx={{ position: 'relative', minWidth: 200 }}>
             <TextField
               label="Lokalizacja"
               value={filters.location}
-              onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+              onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
               fullWidth
             />
             {locationSuggestions.length > 0 && (
@@ -143,16 +132,18 @@ function EventList() {
             label="Data od"
             type="date"
             value={filters.startDate}
-            onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+            onChange={(e) => setFilters(prev => ({ ...prev, startDate: e.target.value }))}
             InputLabelProps={{ shrink: true }}
+            sx={{ minWidth: 160 }}
           />
 
           <TextField
             label="Data do"
             type="date"
             value={filters.endDate}
-            onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+            onChange={(e) => setFilters(prev => ({ ...prev, endDate: e.target.value }))}
             InputLabelProps={{ shrink: true }}
+            sx={{ minWidth: 160 }}
           />
         </Box>
 
@@ -185,3 +176,4 @@ const styles = {
 }
 
 export default EventList
+
