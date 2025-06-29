@@ -24,6 +24,9 @@ const Navbar = () => {
           <Button component={Link} to="/calendar" sx={{ mr: 2 }} variant="outlined" color="primary">
             Kalendarz ogólny
           </Button>
+          <Button component={Link} to="/create-event" sx={{ mr: 2 }} variant="outlined" color="primary">
+            Dodaj wydarzenie
+          </Button>
         </Box>
         <Box>
           {isLoggedIn ? (
