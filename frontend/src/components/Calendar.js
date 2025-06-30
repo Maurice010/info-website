@@ -12,7 +12,7 @@ import '@schedule-x/theme-default/dist/index.css'
 import axios from 'axios'
 import { formatCalendarDate } from '../utils/dateUtils'
 
-function Calendar() {
+function Calendar({ source = 'all' }) {
   const eventsService = createEventsServicePlugin()
   const eventModal = createEventModalPlugin()
 
@@ -23,14 +23,22 @@ function Calendar() {
       createViewMonthGrid(),
       createViewMonthAgenda(),
     ],
-    events: [], 
+    events: [],
     plugins: [eventsService, eventModal],
   })
 
   useEffect(() => {
     const fetchEvents = async () => {
+      const endpoint =
+        source === 'my' ? '/api/users/me/events' : '/api/events'
+
+      const token = localStorage.getItem('token')
+
       try {
-        const res = await axios.get('/api/events')
+        const res = await axios.get(endpoint, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        })
+
         const formatted = res.data.map((e) => ({
           id: String(e.id),
           title: e.name,
@@ -46,7 +54,7 @@ function Calendar() {
     }
 
     fetchEvents()
-  }, [eventsService])
+  }, [eventsService, source])
 
   return (
     <div style={{ padding: '2rem' }}>

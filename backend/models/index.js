@@ -16,6 +16,28 @@ const sequelize = new Sequelize(
 
 const User = UserModel(sequelize);
 const Event = EventModel(sequelize);
+User.belongsToMany(Event, {
+    through: 'UserEvents',
+    as: 'savedEvents',
+    foreignKey: 'userId',
+});
+Event.belongsToMany(User, {
+    through: 'UserEvents',
+    as: 'savedByUsers',
+    foreignKey: 'eventId',
+});
+
+User.belongsToMany(Event, {
+    through: 'UserFavorites',
+    as: 'favoriteEvents',
+    foreignKey: 'userId',
+});
+  
+Event.belongsToMany(User, {
+    through: 'UserFavorites',
+    as: 'favoritedByUsers',
+    foreignKey: 'eventId',
+});
 
 sequelize.sync()
   .then(() => console.log('Połączono z bazą danych i zsynchronizowano modele'))

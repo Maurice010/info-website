@@ -22,7 +22,8 @@ const App = () => (
         <Route path="/create-event" element={<EventCreation />} />
         <Route path="/event/:id" element={<EventDetails />} />
         <Route path="/event/edit/:id" element={<EventEdit />} />
-        <Route path="/calendar" element={<MainCalendar />} />
+        <Route path="/calendar" element={<MainCalendar title="Kalendarz wydarzeń" />} />
+        <Route path="/my-calendar" element={<MainCalendar title="Mój kalendarz" />} />
         <Route path="/events" element={<EventList />} />
       </Routes>
     </Router>

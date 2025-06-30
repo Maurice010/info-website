@@ -13,10 +13,13 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { formatDateTime } from '../utils/dateUtils';
+import { useAuth } from '../context/AuthContext';
 
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user: loggedUser } = useAuth();
+
   const [event, setEvent] = useState(null);
   const [error, setError] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -37,7 +40,12 @@ const EventDetails = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`/api/events/${id}`);
+      const token = localStorage.getItem('token');
+      await axios.delete(`/api/events/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       navigate('/events');
     } catch (err) {
       console.error(err);
@@ -52,6 +60,10 @@ const EventDetails = () => {
       </Container>
     );
   }
+
+  console.log('loggedUser:', loggedUser);
+  console.log('event.ownerId:', event.ownerId);
+  const isOwner = loggedUser && String(event.ownerId) === String(loggedUser.id);
 
   return (
     <Container maxWidth="md">
@@ -78,22 +90,24 @@ const EventDetails = () => {
           </Typography>
         )}
 
-        <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => navigate(`/event/edit/${event.id}`)}
-          >
-            Edytuj
-          </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={() => setDialogOpen(true)}
-          >
-            Usuń
-          </Button>
-        </Box>
+        {isOwner && (
+          <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => navigate(`/event/edit/${event.id}`)}
+            >
+              Edytuj
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => setDialogOpen(true)}
+            >
+              Usuń
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>

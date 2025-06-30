@@ -8,6 +8,8 @@ import {
   Typography,
   Alert,
 } from '@mui/material';
+import axios from 'axios';
+
 
 const Register = () => {
   const [form, setForm] = useState({ login: '', password: '' });
@@ -18,19 +20,12 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch('http://localhost:5000/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      navigate('/login');
-    } else {
-      setError(true);
-      setMessage(data.message || 'Błąd rejestracji. Spróbuj ponownie.');
+    try {
+        await axios.post('http://localhost:5000/api/auth/register', form);
+        navigate('/login');
+    } catch (err) {
+        setError(true);
+        setMessage(err.response?.data?.message || 'Błąd rejestracji. Spróbuj ponownie.');
     }
   };
 

@@ -34,7 +34,13 @@ const EventCreation = () => {
     };
 
     try {
-      const res = await axios.post('/api/events', eventData)
+      const token = localStorage.getItem('token');
+      const res = await axios.post('/api/events', eventData, {
+        headers: {
+        Authorization: `Bearer ${token}`
+        }
+      });
+        
       setSuccess('Wydarzenie zostało utworzone.')
       e.target.reset()
     } catch (err) {
