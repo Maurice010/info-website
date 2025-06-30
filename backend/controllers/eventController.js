@@ -112,10 +112,25 @@ const deleteEvent = async (req, res) => {
   }
 };
 
+const getLatestEvents = async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit) || 3;
+      const events = await Event.findAll({
+        order: [['createdAt', 'DESC']],
+        limit,
+      });
+      res.json(events);
+    } catch (error) {
+      console.error('Błąd pobierania najnowszych wydarzeń:', error);
+      res.status(500).json({ message: 'Błąd pobierania wydarzeń' });
+    }
+};
+
 module.exports = {
   getAllEvents,
   getEventById,
   createEvent,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  getLatestEvents
 };
