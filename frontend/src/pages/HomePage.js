@@ -44,8 +44,7 @@ const HomePage = () => {
         </Box>
         <Box sx={{ p: 2 }}>
           <Typography variant="body1" color="text.primary">
-            To jest opis Twojej strony — możesz tu opisać jej cel, funkcjonalności lub
-            cokolwiek chcesz.
+            Jest to strona mająca na celu pomóc w znalezieniu i wyborze najlepszych wydarzeń informatycznych.
           </Typography>
         </Box>
       </Paper>
@@ -75,7 +74,7 @@ const HomePage = () => {
         </Box>
         <Box sx={{ p: 2 }}>
           {latestEvents.length === 0 ? (
-            <Typography color="text.secondary">Brak aktualnych wydarzeń.</Typography>
+            <Typography color="text.secondary">Brak wydarzeń.</Typography>
           ) : (
             latestEvents.map(event => (
               <EventItem key={event.id} event={event} />
