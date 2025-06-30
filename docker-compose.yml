@@ -55,9 +55,10 @@ services:
       - backend
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     stdin_open: true
     tty: true
-    command: npm start
+    command: npm start -- --host 0.0.0.0
 
 volumes:
   mysql-data:

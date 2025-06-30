@@ -35,6 +35,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    ownerId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
   });
 
   return Event;

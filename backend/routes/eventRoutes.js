@@ -7,15 +7,13 @@ const {
   updateEvent,
   deleteEvent
 } = require('../controllers/eventController');
+const verifyToken = require('../middleware/auth');
 
 router.get('/', getAllEvents);
-
 router.get('/:id', getEventById);
 
-router.post('/', createEvent);
+router.post('/', verifyToken, createEvent);
+router.put('/:id', verifyToken, updateEvent);
+router.delete('/:id', verifyToken, deleteEvent);
 
-router.put('/:id', updateEvent);
-
-router.delete('/:id', deleteEvent);
-
-module.exports = router; 
+module.exports = router;

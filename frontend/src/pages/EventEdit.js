@@ -50,7 +50,12 @@ const EventEdit = () => {
     };
 
     try {
-      await axios.put(`/api/events/${id}`, updatedEvent);
+        const token = localStorage.getItem('token');
+        await axios.put(`/api/events/${id}`, updatedEvent, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
       setSuccess('Wydarzenie zostało zaktualizowane.');
       setTimeout(() => navigate('/events'), 1500);
     } catch (err) {

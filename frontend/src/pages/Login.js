@@ -9,6 +9,8 @@ import {
   Typography,
   Alert,
 } from '@mui/material';
+import axios from 'axios';
+
 
 const Login = () => {
   const [form, setForm] = useState({ login: '', password: '' });
@@ -20,21 +22,14 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch('http://localhost:5000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem('token', data.token);
-      login(data.token);
-      navigate('/');
-    } else {
-      setError(true);
-      setMessage(data.message || 'Błąd logowania');
+    try {
+        const res = await axios.post('http://localhost:5000/api/auth/login', form);
+        localStorage.setItem('token', res.data.token);
+        login(res.data.token);
+        navigate('/');
+    } catch (err) {
+        setError(true);
+        setMessage(err.response?.data?.message || 'Błąd logowania');
     }
   };
 

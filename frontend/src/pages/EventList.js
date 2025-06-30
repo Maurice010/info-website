@@ -27,6 +27,11 @@ function EventList() {
     endDate: ''
   })
 
+  const loggedUser = useMemo(() => {
+    const user = localStorage.getItem('user')
+    return user ? JSON.parse(user) : null
+  }, [])
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -151,7 +156,7 @@ function EventList() {
 
         {filteredEvents.length > 0 ? (
           filteredEvents.map((event, idx) => (
-            <EventItem key={idx} event={event} />
+            <EventItem key={idx} event={event} loggedUser={loggedUser} />
           ))
         ) : (
           <Typography color="text.secondary">
@@ -176,4 +181,3 @@ const styles = {
 }
 
 export default EventList
-

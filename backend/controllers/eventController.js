@@ -3,7 +3,7 @@ const { Event } = require('../models');
 const getAllEvents = async (req, res) => {
   try {
     const events = await Event.findAll({
-      order: [['startDate', 'ASC']] // sort by start
+      order: [['startDate', 'ASC']]
     });
     res.json(events);
   } catch (error) {
@@ -16,11 +16,11 @@ const getEventById = async (req, res) => {
   try {
     const { id } = req.params;
     const event = await Event.findByPk(id);
-    
+
     if (!event) {
       return res.status(404).json({ message: 'Wydarzenie nie zostało znalezione' });
     }
-    
+
     res.json(event);
   } catch (error) {
     console.error('Error fetching event:', error);
@@ -33,10 +33,12 @@ const createEvent = async (req, res) => {
     const { name, startDate, endDate, category, location, description, link } = req.body;
 
     if (!name || !startDate || !endDate || !category || !location) {
-      return res.status(400).json({ 
-        message: 'Nazwa, data rozpoczęcia, data zakończenia, kategoria i lokalizacja są wymagane' 
+      return res.status(400).json({
+        message: 'Nazwa, data rozpoczęcia, data zakończenia, kategoria i lokalizacja są wymagane'
       });
     }
+
+    const { id: ownerId } = req.user;
 
     const event = await Event.create({
       name,
@@ -45,7 +47,8 @@ const createEvent = async (req, res) => {
       category,
       location,
       description,
-      link
+      link,
+      ownerId
     });
 
     res.status(201).json(event);
@@ -59,10 +62,15 @@ const updateEvent = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, startDate, endDate, category, location, description, link } = req.body;
+    const { id: userId } = req.user;
 
     const event = await Event.findByPk(id);
     if (!event) {
       return res.status(404).json({ message: 'Wydarzenie nie zostało znalezione' });
+    }
+
+    if (event.ownerId !== userId) {
+      return res.status(403).json({ message: 'Brak uprawnień do edycji tego wydarzenia' });
     }
 
     await event.update({
@@ -85,10 +93,15 @@ const updateEvent = async (req, res) => {
 const deleteEvent = async (req, res) => {
   try {
     const { id } = req.params;
-    
+    const { id: userId } = req.user;
+
     const event = await Event.findByPk(id);
     if (!event) {
       return res.status(404).json({ message: 'Wydarzenie nie zostało znalezione' });
+    }
+
+    if (event.ownerId !== userId) {
+      return res.status(403).json({ message: 'Brak uprawnień do usunięcia tego wydarzenia' });
     }
 
     await event.destroy();
