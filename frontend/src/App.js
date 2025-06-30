@@ -9,13 +9,14 @@ import EventDetails from './pages/EventDetails';
 import EventList from './pages/EventList';
 import MainCalendar from './pages/MainCalendar';
 import { AuthProvider } from './context/AuthContext';
+import HomePage from './pages/HomePage';
 
 const App = () => (
   <AuthProvider>
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<h2>Strona Główna</h2>} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />

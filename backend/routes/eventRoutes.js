@@ -5,11 +5,13 @@ const {
   getEventById,
   createEvent,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  getLatestEvents
 } = require('../controllers/eventController');
 const verifyToken = require('../middleware/auth');
 
 router.get('/', getAllEvents);
+router.get('/latest', getLatestEvents);
 router.get('/:id', getEventById);
 
 router.post('/', verifyToken, createEvent);
